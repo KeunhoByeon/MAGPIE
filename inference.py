@@ -4,7 +4,7 @@ import os
 import torch
 from tqdm import tqdm
 
-from inference_sample import get_model
+from inference_sample.get_model import get_model
 from inference_sample.magpie_dataset import MagpieDataset
 
 

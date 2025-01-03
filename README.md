@@ -1,5 +1,4 @@
 # MAGPIE2025
-
 MAGPIE: MULTI-STAIN AND MULTI-ORGAN PATHOLOGY IMAGE RESTORATION CHALLENGE (2025)
 
 # Challenge Docker Image
@@ -9,6 +8,11 @@ docker pull keunhobyeon/magpie2025:latest
 
 # Sample inference code
 Set data path
+```bash
+cd inference_sample
+git clone https://github.com/zsyOAOA/ResShift
+cd ../
+```
 ```bash
 export DATA_PATH=YOUR_DATA_PATH
 ```
