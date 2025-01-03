@@ -64,8 +64,8 @@ DATA_ROOT_DIR/
     │   ├── blur/  
     │   │   └── Slide_1/  
     │   │       ├── 1um/  
-    │   │       │   ├── Slide_1_1um_4656_41216.png  
-    │   │       │   ├── Slide_1_1um_4656_41728.png  
+    │   │       │   ├── Slide_1_4656_41216.png  
+    │   │       │   ├── Slide_1_4656_41728.png  
     │   │       │   └── ...  
     │   │       ├── 2um/  
     │   │       │   └── ...  
@@ -76,8 +76,8 @@ DATA_ROOT_DIR/
     │   └── gt/  
     │       └── Slide_1/  
     │           └── 0um/  
-    │               ├── Slide_1_0um_4656_41216.png  
-    │               ├── Slide_1_0um_4656_41728.png  
+    │               ├── Slide_1_4656_41216.png  
+    │               ├── Slide_1_4656_41728.png  
     │               └── ...
     └── val/
         ├── blur/
