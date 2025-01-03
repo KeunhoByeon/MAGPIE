@@ -29,11 +29,11 @@ Note: The test set patches are generated using following commands.
 
 Patch extraction methods differ based on stain types:
 
-1. H&E and IHC Stains:  
-   The patch extraction code for these stains is implemented based on the following paper:
+1. H&E and IHC Stains  
+   The patch extraction code for these stains is implemented based on the following paper:  
    Lu, Ming Y., et al. "Data-efficient and weakly supervised computational pathology on whole-slide images." Nature Biomedical Engineering 5.6 (2021): 555-570.
-2. Special Stains:  
-   For special stains, a custom patch extraction method was used.
+2. Special Stains  
+   For special stains, a custom patch extraction method is used.
 
 To extract image patches from Whole Slide Images (WSIs), run the following command:
 
