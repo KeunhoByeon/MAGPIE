@@ -1,25 +1,42 @@
 # MAGPIE2025
+
 MAGPIE: MULTI-STAIN AND MULTI-ORGAN PATHOLOGY IMAGE RESTORATION CHALLENGE (2025)
 
+# Environment Setup
 
-# Challenge Docker Image
+### Conda environment
+
+```bash
+conda create -n magpie python=3.10
+conda activate magpie
+pip install -r requirements.txt
+```
+
+### Docker Image
+
 ```bash
 docker pull keunhobyeon/magpie2025:latest
 ```
 
+Note: Patch generation and evaluation will be executed within this environment.
 
 # Dataset
+
+The dataset is provided as .svs Whole Slide Images (WSIs).  
+Note: The test set patches are generated using following commands.
+
 ### Extract Patches
+
 Patch extraction methods differ based on stain types:
 
-H&E and IHC Stains:
-The patch extraction code for these stains is implemented based on the following paper:
-Lu, Ming Y., et al. "Data-efficient and weakly supervised computational pathology on whole-slide images." Nature Biomedical Engineering 5.6 (2021): 555-570.
-
-Special Stains:
-For special stains, a custom patch extraction method was used.
+1. H&E and IHC Stains:  
+   The patch extraction code for these stains is implemented based on the following paper:
+   Lu, Ming Y., et al. "Data-efficient and weakly supervised computational pathology on whole-slide images." Nature Biomedical Engineering 5.6 (2021): 555-570.
+2. Special Stains:  
+   For special stains, a custom patch extraction method was used.
 
 To extract image patches from Whole Slide Images (WSIs), run the following command:
+
 ```bash
 cd make_pathes
 git clone https://github.com/mahmoodlab/CLAM
@@ -28,6 +45,7 @@ cd ../
 ```
 
 ### Data Folder Structure
+
 ```
 DATA_ROOT_DIR/  
     ├── train/  
@@ -55,25 +73,34 @@ DATA_ROOT_DIR/
 ```
 
 # Sample inference code
+
 ### Installation
+
 This sample inference code is implemented based on the following paper:
 Yue, Zongsheng, Jianyi Wang, and Chen Change Loy. "Resshift: Efficient diffusion model for image super-resolution by residual shifting." Advances in Neural Information Processing Systems 36 (2024).
+
 ```bash
 cd inference_sample
 git clone https://github.com/zsyOAOA/ResShift
 cd ../
 ```
+
 Setup environment
+
 ```
 /bin/bash setup.sh
 ```
 
 ### Run Docker Container
+
 Before running the docker container, set your data path as follows:
+
 ```bash
 export DATA_PATH=YOUR_DATA_PATH
 ```
+
 Restart Docker and launch the container:
+
 ```bash
 sudo systemctl restart docker
 sudo docker run --gpus all --network=host --privileged \
@@ -84,22 +111,29 @@ sudo docker run --gpus all --network=host --privileged \
 ```
 
 ### Run Inference
+
 Run inference inside the container:
+
 ```bash
 python inference.py
 ```
 
 ### Retrieve Results
+
 Exit the container:
+
 ```bash
 exit
 ```
+
 Copy the result files from the container:
+
 ```bash
 docker cp magpie2025:/workspace/results ./results
 ```
 
 # Evaluation code
+
 See "evaluation.py" for more detail.
 
 ```python
