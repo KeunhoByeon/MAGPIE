@@ -3,13 +3,36 @@
 MAGPIE: MULTI-STAIN AND MULTI-ORGAN PATHOLOGY IMAGE RESTORATION CHALLENGE (2025)
 
 # Challenge Docker Image
-
-```
+```bash
 docker pull keunhobyeon/magpie2025:latest
 ```
 
+# Sample inference code
+Set data path
+```bash
+export DATA_PATH=YOUR_DATA_PATH
+```
+Run docker container
+```bash
+sudo docker run --gpus all --network=host --privileged \
+-v .:/workspace \
+-v "$DATA_PATH":/data \
+-it magpie2025 \
+/bin/bash
+```
+Run inference
+```bash
+python inference.py
+```
+Copy result files from container
+```bash
+docker cp magpie2025:/workspace/results ./results
+```
+
+
 # Evaluation code
 See "evaluation.py" for more detail.
+
 ```python
 import lpips
 

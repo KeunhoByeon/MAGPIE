@@ -71,8 +71,8 @@ def evaluate(gt_dir, pred_dir):
 
 
 if __name__ == '__main__':
-    pred_dir = 'PRED_ROOT_DIR'
     gt_dir = 'DATA_ROOT_DIR/test/gt'
+    pred_dir = './results'
 
     avg_psnr, avg_ssim, avg_lpips = evaluate(pred_dir, gt_dir)
 
