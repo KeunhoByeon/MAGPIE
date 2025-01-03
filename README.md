@@ -38,9 +38,9 @@ Patch extraction methods differ based on stain types:
 To extract image patches from Whole Slide Images (WSIs), run the following command:
 
 ```bash
-cd make_pathes
+cd make_patches
 git clone https://github.com/mahmoodlab/CLAM
-python make_pathes.py
+python make_patches.py
 cd ../
 ```
 
