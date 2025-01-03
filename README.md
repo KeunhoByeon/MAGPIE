@@ -1,12 +1,14 @@
 # MAGPIE2025
 MAGPIE: MULTI-STAIN AND MULTI-ORGAN PATHOLOGY IMAGE RESTORATION CHALLENGE (2025)
 
-## Challenge Docker Image
+
+# Challenge Docker Image
 ```bash
 docker pull keunhobyeon/magpie2025:latest
 ```
 
-## Dataset
+
+# Dataset
 ### Extract Patches
 Patch extraction methods differ based on stain types:
 
@@ -52,7 +54,7 @@ DATA_ROOT_DIR/
         └── gt/
 ```
 
-## Sample inference code
+# Sample inference code
 ### Installation
 This sample inference code is implemented based on the following paper:
 Yue, Zongsheng, Jianyi Wang, and Chen Change Loy. "Resshift: Efficient diffusion model for image super-resolution by residual shifting." Advances in Neural Information Processing Systems 36 (2024).
@@ -97,7 +99,7 @@ Copy the result files from the container:
 docker cp magpie2025:/workspace/results ./results
 ```
 
-## Evaluation code
+# Evaluation code
 See "evaluation.py" for more detail.
 
 ```python
