@@ -18,13 +18,13 @@ Special Stains:
 For special stains, a custom patch extraction method was used.
 
 To extract image patches from Whole Slide Images (WSIs), run the following command:
-To extract image patches from Whole Slide Images (WSIs), run the following command:
 ```bash
 cd make_pathes
 git clone https://github.com/mahmoodlab/CLAM
 python make_pathes.py
 cd ../
 ```
+
 ### Data Folder Structure
 ```
 DATA_ROOT_DIR/  
