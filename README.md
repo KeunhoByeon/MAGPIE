@@ -7,32 +7,49 @@ docker pull keunhobyeon/magpie2025:latest
 ```
 
 # Sample inference code
-Set data path
+## Installation
+This sample inference code is implemented based on the following paper:
+Yue, Zongsheng, Jianyi Wang, and Chen Change Loy. "Resshift: Efficient diffusion model for image super-resolution by residual shifting." Advances in Neural Information Processing Systems 36 (2024).
 ```bash
 cd inference_sample
 git clone https://github.com/zsyOAOA/ResShift
 cd ../
 ```
+Setup environment
+```
+/bin/bash setup.sh
+```
+
+## Run Docker Container
+Before running the docker container, set your data path as follows:
 ```bash
 export DATA_PATH=YOUR_DATA_PATH
 ```
-Run docker container
+Restart Docker and launch the container:
 ```bash
+sudo systemctl restart docker
 sudo docker run --gpus all --network=host --privileged \
 -v .:/workspace \
 -v "$DATA_PATH":/data \
 -it magpie2025 \
 /bin/bash
 ```
-Run inference
+
+## Run Inference
+Run inference inside the container:
 ```bash
 python inference.py
 ```
-Copy result files from container
+
+## Retrieve Results
+Exit the container:
+```bash
+exit
+```
+Copy the result files from the container:
 ```bash
 docker cp magpie2025:/workspace/results ./results
 ```
-
 
 # Evaluation code
 See "evaluation.py" for more detail.
