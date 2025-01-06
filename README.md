@@ -42,7 +42,7 @@ To extract image patches from Whole Slide Images (WSIs), run the following comma
 ```bash
 cd make_patches
 git clone https://github.com/mahmoodlab/CLAM
-python make_patches.py
+python make_patches.py --source_dir "SLIDE_DIR" --save_dir "PATCH_SAVE_DIR"
 cd ../
 ```
 
@@ -119,7 +119,7 @@ export DATA_PATH="YOUR_DATA_PATH"
 #### Run inference inside the container
 
 ```bash
-sudo docker run --gpus all --network=host --privileged \
+sudo docker run --rm --gpus all --network=host --privileged \
 -v .:/workspace \
 -v "$DATA_PATH":/data \
 -it magpie2025 \

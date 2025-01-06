@@ -13,7 +13,6 @@ class ModelWrapper(torch.nn.Module):
         self.diffusion = diffusion
 
     def forward(self, inputs):
-        inputs = inputs * 0.5 + 0.5
         model_kwargs = {'lq': inputs}
 
         outputs = self.diffusion.p_sample_loop(

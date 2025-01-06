@@ -10,12 +10,15 @@ from magpie_dataset import MagpieDataset
 
 
 def process_output(outputs):
-    outputs = outputs.squeeze(0).float().detach().cpu().clamp(min=0.0, max=1.0)
-    outputs = (outputs - 0.0) / (1.0 - 0.0)
+    outputs = outputs.detach().squeeze(0).float()
+    outputs = outputs * 0.5 + 0.5
+    outputs = outputs.clamp(min=0.0, max=1.0)
+    outputs = (outputs * 255.0).round()
+    if torch.cuda.is_available():
+        outputs = outputs.cpu()
     outputs = outputs.numpy()
     outputs = outputs.transpose(1, 2, 0)
     outputs = cv2.cvtColor(outputs, cv2.COLOR_RGB2BGR)
-    outputs = (outputs * 255.0).round()
     return outputs
 
 
