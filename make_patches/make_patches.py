@@ -39,10 +39,14 @@ def generate_h5_and_patches(source_dir, save_dir, tile_size, resize_size, batch_
 
     # Create CSV file to track progress
     process_list_csv = os.path.join(save_dir, "process_list.csv")
-    if os.path.exists(process_list_csv):
-        process_list = pd.read_csv(process_list_csv)
+
+    # Check if CSV file exists, if not create a new one
+    if not os.path.exists(process_list_csv) or os.stat(process_list_csv).st_size == 0:
+        print(f"Creating new CSV file at {process_list_csv}")
+        process_list = pd.DataFrame(columns=["slide_id", "offset", "status"])
     else:
-        process_list = pd.DataFrame(columns=["subset", "slide_id", "status"])
+        print(f"Loading existing CSV file from {process_list_csv}")
+        process_list = pd.read_csv(process_list_csv)
 
     world_size = len(gpu_ids)
     mp.spawn(worker, args=(world_size, gpu_ids, source_dir, save_dir, tile_size, resize_size, batch_size, process_list_csv), nprocs=world_size, join=True)
@@ -51,7 +55,7 @@ def generate_h5_and_patches(source_dir, save_dir, tile_size, resize_size, batch_
 # Worker function for multiprocessing
 def worker(rank, world_size, gpu_ids, source_dir, save_dir, tile_size, resize_size, batch_size, process_list_csv):
     os.environ['MASTER_ADDR'] = '127.0.0.1'
-    os.environ['MASTER_PORT'] = '12356'
+    os.environ['MASTER_PORT'] = '12358'
 
     gpu_id = gpu_ids[rank]
     torch.cuda.set_device(gpu_id)
@@ -59,17 +63,18 @@ def worker(rank, world_size, gpu_ids, source_dir, save_dir, tile_size, resize_si
 
     print(f"[Rank {rank}] Using device: {torch.cuda.get_device_name(gpu_id)}")
 
-    # Read or initialize the process list
     if os.path.exists(process_list_csv):
         process_list = pd.read_csv(process_list_csv)
     else:
-        process_list = pd.DataFrame(columns=["subset", "slide_id", "status"])
+        print(f"[Rank {rank}] CSV file not found. Exiting...")
+        return
 
     for subset in ["train", "val"]:
         gt_dir = os.path.join(source_dir, subset, "gt")
         blur_dir = os.path.join(source_dir, subset, "blur")
 
         if not os.path.exists(gt_dir):
+            print(f"[Rank {rank}] Directory not found: {gt_dir}")
             continue
 
         # Ensure necessary directories exist
@@ -78,7 +83,7 @@ def worker(rank, world_size, gpu_ids, source_dir, save_dir, tile_size, resize_si
         os.makedirs(os.path.join(save_dir, subset, 'stitches'), exist_ok=True)
 
         seg_and_patch(
-            source=gt_dir,  # Using directory path instead of file path
+            source=gt_dir,
             save_dir=save_dir,
             patch_save_dir=os.path.join(save_dir, subset, 'patches'),
             mask_save_dir=os.path.join(save_dir, subset, 'masks'),
@@ -89,7 +94,12 @@ def worker(rank, world_size, gpu_ids, source_dir, save_dir, tile_size, resize_si
             patch_level=0
         )
 
-        h5_files = [os.path.join(save_dir, subset, "patches", f) for f in os.listdir(os.path.join(save_dir, subset, "patches")) if f.endswith(".h5")]
+        h5_files_dir = os.path.join(save_dir, subset, "patches")
+        if not os.path.exists(h5_files_dir):
+            print(f"[Rank {rank}] Directory {h5_files_dir} not found. Skipping...")
+            continue
+
+        h5_files = [os.path.join(h5_files_dir, f) for f in os.listdir(h5_files_dir) if f.endswith(".h5")]
 
         for h5_file in h5_files:
             slide_id = os.path.basename(h5_file).replace("_OFS-0.h5", "")
@@ -100,8 +110,19 @@ def worker(rank, world_size, gpu_ids, source_dir, save_dir, tile_size, resize_si
                 if not os.path.exists(slide_path):
                     continue
 
+                slide_filename = f"{slide_id}_OFS-{offset}.svs"
+                if ((process_list["slide_id"] == slide_filename) & (process_list["offset"] == f"{offset}um") & (process_list["status"] == "processed")).any():
+                    print(f"[Rank {rank}] {slide_filename} already processed. Skipping...")
+                    continue
+
+                print(f"[Rank {rank}] Processing {slide_filename}...")
                 process_slide(slide_path, coordinates, save_dir, slide_id, f"{offset}um", tile_size, resize_size, rank, subset, batch_size)
-                new_row = pd.DataFrame({"subset": [subset], "slide_id": [slide_id], "status": ["processed"]})
+
+                new_row = pd.DataFrame({
+                    "slide_id": [slide_filename],
+                    "offset": [f"{offset}um"],
+                    "status": ["processed"]
+                })
                 process_list = pd.concat([process_list, new_row], ignore_index=True)
                 process_list.to_csv(process_list_csv, index=False)
 
