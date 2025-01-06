@@ -20,7 +20,7 @@ pip install -r requirements.txt
 sudo docker pull keunhobyeon/magpie2025:latest
 ```
 
-Note: Patch generation and evaluation will be executed within this environment.
+* Note: Patch generation and evaluation will be executed within this environment.
 
 # Dataset
 
@@ -85,11 +85,18 @@ Yue, Zongsheng, Jianyi Wang, and Chen Change Loy. "Resshift: Efficient diffusion
 git clone https://github.com/zsyOAOA/ResShift
 ```
 
+#### Copy python scripts to run inference
+
 ```bash
 cp -r inference_sample/code/* ResShift/
 ```
 
-Setup environment:
+#### Download Model Weights
+
+1. Download the pre-trained VQGAN model weight ("autoencoder_vq_f4.pth") from the [ResShift GitHub repository](https://github.com/zsyOAOA/ResShift) and save it in the inference_sample/weights directory.
+2. Download "model_400000.pth" from [this link](https://github.com/KeunhoByeon/MAGPIE2025/releases/tag/v1.0) and save it in the inference_sample/weights directory.
+
+#### Setup environment
 
 ```bash
 /bin/bash setup.sh
@@ -97,19 +104,19 @@ Setup environment:
 
 ### Run inference
 
-Restart Docker:
+#### Restart Docker
 
 ```bash
 sudo systemctl restart docker
 ```
 
-Set your data path as follows:
+#### Set your data path as follows
 
 ```bash
 export DATA_PATH="YOUR_DATA_PATH"
 ```
 
-Run inference inside the container:
+#### Run inference inside the container
 
 ```bash
 sudo docker run --gpus all --network=host --privileged \
@@ -121,13 +128,14 @@ python ./ResShift/inference.py
 
 # Evaluation code
 
-Run evaluation:
+#### Run evaluation
 
 ```bash
 python evaluation.py --gt_dir "YOUR_GT_PATH" --pred_dir ./results/test/blur
 ```
 
 See "evaluation.py" for more detail.
+
 ```python
 import lpips
 
