@@ -21,3 +21,4 @@ imageio==2.34.2
 openslide-python==1.4.1
 openslide-bin==4.0.0.6
 h5py==3.11.0
+loralib==0.1.2

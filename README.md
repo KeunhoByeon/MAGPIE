@@ -15,7 +15,7 @@ pip install -r requirements.txt
 ### Docker Image
 
 ```bash
-docker pull keunhobyeon/magpie2025:latest
+sudo docker pull keunhobyeon/magpie2025:latest
 ```
 
 Note: Patch generation and evaluation will be executed within this environment.
@@ -80,9 +80,11 @@ This sample inference code is implemented based on the following paper:
 Yue, Zongsheng, Jianyi Wang, and Chen Change Loy. "Resshift: Efficient diffusion model for image super-resolution by residual shifting." Advances in Neural Information Processing Systems 36 (2024).
 
 ```bash
-cd inference_sample
 git clone https://github.com/zsyOAOA/ResShift
-cd ../
+```
+
+```bash
+cp -r inference_sample/code/* ResShift/
 ```
 
 Setup environment
@@ -96,7 +98,8 @@ Setup environment
 Before running the docker container, set your data path as follows:
 
 ```bash
-export DATA_PATH=YOUR_DATA_PATH
+export DATA_PATH="YOUR_DATA_PATH"
+export DATA_PATH=./challenge_data_sample
 ```
 
 Restart Docker and launch the container:
@@ -107,7 +110,7 @@ sudo docker run --gpus all --network=host --privileged \
 -v .:/workspace \
 -v "$DATA_PATH":/data \
 -it magpie2025 \
-/bin/bash
+python ./ResShift/inference.py
 ```
 
 ### Run Inference
@@ -115,26 +118,13 @@ sudo docker run --gpus all --network=host --privileged \
 Run inference inside the container:
 
 ```bash
-python inference.py
-```
-
-### Retrieve Results
-
-Exit the container:
-
-```bash
-exit
-```
-
-Copy the result files from the container:
-
-```bash
-docker cp magpie2025:/workspace/results ./results
 ```
 
 # Evaluation code
 
-See "evaluation.py" for more detail.
+```bash
+python evaluation.py --gt_dir "YOUR_GT_PATH" --pred_dir ./results/test/blur
+```
 
 ```python
 import lpips
@@ -158,3 +148,5 @@ def calcualte_lpips(pred, gt):
     lpips_score = lpips_loss(lpips.im2tensor(pred).cuda(), lpips.im2tensor(gt).cuda()).item()
     return lpips_score
 ```
+
+See "evaluation.py" for more detail.

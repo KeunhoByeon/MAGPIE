@@ -11,7 +11,7 @@ class MagpieDataset(Dataset):
         assert mode in ['train', 'val', 'test']
 
         self.transform = torchvision.transforms.Compose([
-            torchvision.transforms.Resize(size=256),
+            # torchvision.transforms.Resize(size=256),
             torchvision.transforms.ToTensor(),
             torchvision.transforms.Normalize(mean=0.5, std=0.5),
         ])
@@ -46,11 +46,12 @@ class MagpieDataset(Dataset):
         return len(self.samples)
 
     def __getitem__(self, idx):
-        image_path = self.file_paths[idx]
+        image_path = self.samples[idx]
 
-        image = cv2.imread(image_path, cv2.IMREAD_COLOR)
+        image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         image = self.transform(image)
+        image = image.unsqueeze(0)
 
         if self.mode == 'test':
             return image_path, image
@@ -60,4 +61,5 @@ class MagpieDataset(Dataset):
             gt = cv2.imread(gt_path, cv2.IMREAD_COLOR)
             gt = cv2.cvtColor(gt, cv2.COLOR_BGR2RGB)
             gt = self.transform(gt)
+            gt = gt.unsqueeze(0)
             return image_path, gt_path, image, gt
