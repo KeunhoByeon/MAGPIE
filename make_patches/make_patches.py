@@ -151,8 +151,8 @@ def load_coordinates_from_h5(h5_file_path):
 # Main function
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='MAGPIE make patches')
-    parser.add_argument('--source_dir', default="/home/compu/jiwoo/challenge_data_sample/test/gt", type=str)
-    parser.add_argument('--save_dir', default="./results/test/blur", type=str)
+    parser.add_argument('--source_dir', default="", type=str)
+    parser.add_argument('--save_dir', default="", type=str)
     parser.add_argument('--gpus', default=[0, 1, 2, 3], type=list)
     parser.add_argument('--batch_size', default=512, type=int)
     parser.add_argument('--tile_size', default=(512, 512), type=tuple)
