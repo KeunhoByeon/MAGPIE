@@ -153,7 +153,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='MAGPIE make patches')
     parser.add_argument('--source_dir', default="", type=str)
     parser.add_argument('--save_dir', default="", type=str)
-    parser.add_argument('--gpus', default=[0, 1, 2, 3], type=list)
+    parser.add_argument('--gpus', nargs='+', type=int, default=[0, 1, 2, 3])
     parser.add_argument('--batch_size', default=512, type=int)
     parser.add_argument('--tile_size', default=(512, 512), type=tuple)
     parser.add_argument('--resize_size', default=(256, 256), type=tuple)

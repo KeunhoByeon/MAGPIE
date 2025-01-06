@@ -42,36 +42,68 @@ To extract image patches from Whole Slide Images (WSIs), run the following comma
 ```bash
 cd make_patches
 git clone https://github.com/mahmoodlab/CLAM
-python make_patches.py --source_dir "SLIDE_DIR" --save_dir "PATCH_SAVE_DIR"
+python make_patches.py --source_dir "SLIDE_DIR" --save_dir "PATCH_SAVE_DIR"  --gpus 1 2 3 5 6
 cd ../
 ```
 
 ### Data Folder Structure
 
 ```
-DATA_ROOT_DIR/  
-    ├── train/  
-    │   ├── blur/  
-    │   │   └── Slide_1/  
-    │   │       ├── 1um/  
-    │   │       │   ├── Slide_1_4656_41216.png  
-    │   │       │   ├── Slide_1_4656_41728.png  
-    │   │       │   └── ...  
-    │   │       ├── 2um/  
-    │   │       │   └── ...  
-    │   │       ├── 3um/  
-    │   │       │   └── ...  
-    │   │       └── 4um/  
-    │   │           └── ...  
-    │   └── gt/  
-    │       └── Slide_1/  
-    │           └── 0um/  
-    │               ├── Slide_1_4656_41216.png  
-    │               ├── Slide_1_4656_41728.png  
-    │               └── ...
-    └── val/
-        ├── blur/
-        └── gt/
+SLIDE_DIR/
+├── Train/
+│   ├── gt/
+│   │   ├── Slide_1_0um.svs
+│   │   └── ...
+│   └── blur/
+│       ├── Slide_1_1um.svs
+│       ├── Slide_1_2um.svs
+│       └── ...
+└── Val/
+    ├── gt/
+    │   ├── Slide_2_0um.svs
+    │   └── ...
+    └── blur/
+        ├── Slide_2_1um.svs
+        ├── Slide_2_2um.svs
+        └── ...
+```
+```
+PATCH_DIR/
+├── train/
+│   ├── blur/
+│   │   └── SLIDE_1/    # Subfolder for each slide ID
+│   │       ├── 1um/
+│   │       │   ├── Slide_1_4656_41216.png
+│   │       │   ├── Slide_1_4656_41728.png
+│   │       │   └── ...
+│   │       ├── 2um/
+│   │       │   ├── Slide_1_4656_41216.png
+│   │       │   ├── Slide_1_4656_41728.png
+│   │       │   └── ...
+│   │       └── ...
+│   │ 
+│   ├── gt/
+│   │   └── SLIDE_1/    # Subfolder for each slide ID
+│   │       └── 0um/       # Original slide with 0μm offset
+│   │           ├── Slide_1_4656_41216.png
+│   │           ├── Slide_1_4656_41728.png
+│   │           └── ...
+│   │
+│   ├── masks/             # Stores tissue segmentation masks 
+│   │   ├── Slide_1_0um.jpg
+│   │   └── ...
+│   │
+│   ├── patches/           # Stores extracted coords
+│   │   ├── Slide_1_0um.h5
+│   │   └── ... 
+│   │
+│   └── stitches/          # Stores stitched heatmap images 
+│       ├── Slide_1_0um.jpg 
+│       └── ...
+│
+└── val/
+    ├── blur/...           #same as train
+    └── gt/...             #same as train
 ```
 
 # Sample inference code
