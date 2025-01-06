@@ -2,7 +2,8 @@
 
 # MAGPIE2025
 
-MAGPIE: MULTI-STAIN AND MULTI-ORGAN PATHOLOGY IMAGE RESTORATION CHALLENGE (2025)
+MAGPIE: MULTI-STAIN AND MULTI-ORGAN PATHOLOGY IMAGE RESTORATION CHALLENGE (2025)  
+Challenge URL: https://www.codabench.org/competitions/4880/
 
 # Environment Setup
 
@@ -47,10 +48,9 @@ cd ../
 ```
 
 ### Data Folder Structure
-
 ```
 SLIDE_DIR/
-├── Train/
+├── train/
 │   ├── gt/
 │   │   ├── Slide_1_0um.svs
 │   │   └── ...
@@ -58,7 +58,7 @@ SLIDE_DIR/
 │       ├── Slide_1_1um.svs
 │       ├── Slide_1_2um.svs
 │       └── ...
-└── Val/
+└── val/
     ├── gt/
     │   ├── Slide_2_0um.svs
     │   └── ...
@@ -89,15 +89,15 @@ PATCH_DIR/
 │   │           ├── Slide_1_4656_41728.png
 │   │           └── ...
 │   │
-│   ├── masks/             # Stores tissue segmentation masks 
+│   ├── masks/             # (CLAM) Stores tissue segmentation masks
 │   │   ├── Slide_1_0um.jpg
 │   │   └── ...
 │   │
-│   ├── patches/           # Stores extracted coords
+│   ├── patches/           # (CLAM) Stores extracted coords
 │   │   ├── Slide_1_0um.h5
 │   │   └── ... 
 │   │
-│   └── stitches/          # Stores stitched heatmap images 
+│   └── stitches/          # (CLAM) Stores stitched heatmap images 
 │       ├── Slide_1_0um.jpg 
 │       └── ...
 │
@@ -108,7 +108,7 @@ PATCH_DIR/
 
 # Sample inference code
 
-### Installation
+#### Installation
 
 This sample inference code is implemented based on the following paper:
 Yue, Zongsheng, Jianyi Wang, and Chen Change Loy. "Resshift: Efficient diffusion model for image super-resolution by residual shifting." Advances in Neural Information Processing Systems 36 (2024).
@@ -133,8 +133,6 @@ cp -r inference_sample/code/* ResShift/
 ```bash
 /bin/bash setup.sh
 ```
-
-### Run inference
 
 #### Restart Docker
 
