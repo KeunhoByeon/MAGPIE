@@ -1,3 +1,5 @@
+![Logo](docs/logo_magpie1_4.png)
+
 # MAGPIE2025
 
 MAGPIE: MULTI-STAIN AND MULTI-ORGAN PATHOLOGY IMAGE RESTORATION CHALLENGE (2025)
@@ -87,25 +89,29 @@ git clone https://github.com/zsyOAOA/ResShift
 cp -r inference_sample/code/* ResShift/
 ```
 
-Setup environment
+Setup environment:
 
-```
+```bash
 /bin/bash setup.sh
 ```
 
-### Run Docker Container
+### Run inference
 
-Before running the docker container, set your data path as follows:
-
-```bash
-export DATA_PATH="YOUR_DATA_PATH"
-export DATA_PATH=./challenge_data_sample
-```
-
-Restart Docker and launch the container:
+Restart Docker:
 
 ```bash
 sudo systemctl restart docker
+```
+
+Set your data path as follows:
+
+```bash
+export DATA_PATH="YOUR_DATA_PATH"
+```
+
+Run inference inside the container:
+
+```bash
 sudo docker run --gpus all --network=host --privileged \
 -v .:/workspace \
 -v "$DATA_PATH":/data \
@@ -113,19 +119,15 @@ sudo docker run --gpus all --network=host --privileged \
 python ./ResShift/inference.py
 ```
 
-### Run Inference
-
-Run inference inside the container:
-
-```bash
-```
-
 # Evaluation code
+
+Run evaluation:
 
 ```bash
 python evaluation.py --gt_dir "YOUR_GT_PATH" --pred_dir ./results/test/blur
 ```
 
+See "evaluation.py" for more detail.
 ```python
 import lpips
 
@@ -149,4 +151,3 @@ def calcualte_lpips(pred, gt):
     return lpips_score
 ```
 
-See "evaluation.py" for more detail.

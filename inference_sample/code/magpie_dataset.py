@@ -11,8 +11,8 @@ class MagpieDataset(Dataset):
         assert mode in ['train', 'val', 'test']
 
         self.transform = torchvision.transforms.Compose([
-            # torchvision.transforms.Resize(size=256),
             torchvision.transforms.ToTensor(),
+            torchvision.transforms.Resize(size=256),
             torchvision.transforms.Normalize(mean=0.5, std=0.5),
         ])
 
