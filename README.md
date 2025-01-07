@@ -25,8 +25,8 @@ sudo docker pull keunhobyeon/magpie2025:latest
 
 # Dataset
 
-The dataset is provided as .svs Whole Slide Images (WSIs).  
-Note: The test set patches are generated using following commands.
+The dataset is provided as .svs Whole Slide Images (WSIs).
+* Note: The test set patches are generated using following commands.
 
 ### Extract Patches
 
@@ -38,16 +38,18 @@ Patch extraction methods differ based on stain types:
 2. Special Stains  
    For special stains, a custom patch extraction method is used.
 
+Each slide will be cropped to 512x512 pixels(40x magnification), resized to 256x256 pixels(20x magnification).  
 To extract image patches from Whole Slide Images (WSIs), run the following command:
 
 ```bash
 cd make_patches
 git clone https://github.com/mahmoodlab/CLAM
-python make_patches.py --source_dir "SLIDE_DIR" --save_dir "PATCH_SAVE_DIR"  --gpus 1 2 3 5 6
+python make_patches.py --source_dir "SLIDE_DIR" --save_dir "PATCH_SAVE_DIR"  --gpus 1 2 3 4
 cd ../
 ```
 
 ### Data Folder Structure
+
 ```
 SLIDE_DIR/
 ├── train/
@@ -67,6 +69,7 @@ SLIDE_DIR/
         ├── Slide_2_2um.svs
         └── ...
 ```
+
 ```
 PATCH_DIR/
 ├── train/
@@ -108,7 +111,7 @@ PATCH_DIR/
 
 # Sample inference code
 
-#### Installation
+### Installation
 
 This sample inference code is implemented based on the following paper:
 Yue, Zongsheng, Jianyi Wang, and Chen Change Loy. "Resshift: Efficient diffusion model for image super-resolution by residual shifting." Advances in Neural Information Processing Systems 36 (2024).
@@ -128,40 +131,64 @@ cp -r inference_sample/code/* ResShift/
 1. Download the pre-trained VQGAN model weight ("autoencoder_vq_f4.pth") from the [ResShift GitHub repository](https://github.com/zsyOAOA/ResShift) and save it in the inference_sample/weights directory.
 2. Download "model_400000.pth" from [this link](https://github.com/KeunhoByeon/MAGPIE2025/releases/tag/v1.0) and save it in the inference_sample/weights directory.
 
-#### Setup environment
+### How to build your docker image
 
+#### Install the required NVIDIA container toolkit to support GPU usage in Docker
 ```bash
-/bin/bash setup.sh
+sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 ```
 
-#### Restart Docker
+#### Set a name for your Docker image
+```bash
+export DOCKER_IMAGE_NAME="YOUR_DOCKER_IMAGE_NAME"
+```
+
+#### Build docker image
+```bash
+sudo docker build -t "$DOCKER_IMAGE_NAME" -f Dockerfile .
+```
+
+#### (Optional) Save docker image file
+```bash
+sudo docker save -o "$DOCKER_IMAGE_NAME".tat "$DOCKER_IMAGE_NAME"
+```
+
+#### (Optional) Change the file permissions to 777
+```bash
+sudo chmod 777 "$DOCKER_IMAGE_NAME".tar
+```
+* Note: The participants are asked to submit a docker image through our website (https://www.codabench.org/competitions/4880).
+
+### Run inference
+
+#### Set your data path
+
+```bash
+export DATA_PATH="YOUR_PATCH_DATA_DIR"
+```
+
+#### Run inference
 
 ```bash
 sudo systemctl restart docker
-```
-
-#### Set your data path as follows
-
-```bash
-export DATA_PATH="YOUR_DATA_PATH"
-```
-
-#### Run inference inside the container
-
-```bash
-sudo docker run --rm --gpus all --network=host --privileged \
--v .:/workspace \
+sudo docker run --gpus device=0 --network=host --privileged -it \
 -v "$DATA_PATH":/data \
--it magpie2025 \
-python ./ResShift/inference.py
+--name magpie2025_sample_run \
+"$DOCKER_IMAGE_NAME" python inference.py
+```
+
+#### Copy the result files from the container
+
+```bash
+sudo docker cp magpie2025_sample_run:/workspace/results ./results
 ```
 
 # Evaluation code
 
-#### Run evaluation
+### Run evaluation
 
 ```bash
-python evaluation.py --gt_dir "YOUR_GT_PATH" --pred_dir ./results/test/blur
+python evaluation.py --gt_dir "YOUR_GT_DIR" --pred_dir ./results/test/blur
 ```
 
 See "evaluation.py" for more detail.

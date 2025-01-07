@@ -44,9 +44,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='MAGPIE inference')
     # Model Arguments
     parser.add_argument('--model', default='resshift', type=str)
-    parser.add_argument('--config', default="./ResShift/configs/deblur_gopro256.yaml", type=str)
-    parser.add_argument('--ckpt', default="./inference_sample/weights/model_400000.pth", type=str)
-    parser.add_argument('--encoder_ckpt', default="./inference_sample/weights/autoencoder_vq_f4.pth", type=str)
+    parser.add_argument('--config', default="./configs/deblur_gopro256.yaml", type=str)
+    parser.add_argument('--ckpt', default="./weights/model_400000.pth", type=str)
+    parser.add_argument('--encoder_ckpt', default="./weights/autoencoder_vq_f4.pth", type=str)
     # Data Arguments
     parser.add_argument('--data_dir', default="/data", type=str)
     parser.add_argument('--results_dir', default="./results", help='path to results')
