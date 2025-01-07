@@ -171,7 +171,7 @@ import lpips
 
 from skimage.metrics import peak_signal_noise_ratio, structural_similarity
 
-lpips_loss = lpips.LPIPS(net='vgg').cuda()
+lpips_loss = lpips.LPIPS(net='vgg')
 
 
 def calcualte_psnr(pred, gt):
@@ -184,8 +184,9 @@ def calcualte_ssim(pred, gt):
     return ssim_score
 
 
-def calcualte_lpips(pred, gt):
-    lpips_score = lpips_loss(lpips.im2tensor(pred).cuda(), lpips.im2tensor(gt).cuda()).item()
-    return lpips_score
+def calculate_lpips(pred, gt):
+    pred_tensor = lpips.im2tensor(pred)
+    gt_tensor = lpips.im2tensor(gt)
+    return lpips_loss(pred_tensor, gt_tensor).item()
 ```
 
