@@ -1,25 +1,19 @@
 import argparse
-import cv2
 import os
-import time
+
+import cv2
 import torch
+from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from get_model import get_model
 from magpie_dataset import MagpieDataset
 
 
-def process_output(outputs):
-    outputs = outputs.detach().squeeze(0).float()
-    outputs = outputs * 0.5 + 0.5
-    outputs = outputs.clamp(min=0.0, max=1.0)
-    outputs = (outputs * 255.0).round()
-    if torch.cuda.is_available():
-        outputs = outputs.cpu()
-    outputs = outputs.numpy()
-    outputs = outputs.transpose(1, 2, 0)
-    outputs = cv2.cvtColor(outputs, cv2.COLOR_RGB2BGR)
-    return outputs
+def process_output(output):
+    output = output.transpose(1, 2, 0)
+    output = cv2.cvtColor(output, cv2.COLOR_RGB2BGR)
+    return output
 
 
 def inference(args, model, infer_loader, mode):
@@ -34,10 +28,20 @@ def inference(args, model, infer_loader, mode):
                     targets = targets.cuda()
 
             outputs = model(inputs)
-            outputs = process_output(outputs)
-            save_path = input_paths.replace(args.data_dir, args.results_dir)
-            os.makedirs(os.path.dirname(save_path), exist_ok=True)
-            cv2.imwrite(save_path, outputs)
+
+            outputs = outputs.detach()
+            outputs = outputs.float()
+            if torch.cuda.is_available():
+                outputs = outputs.cpu()
+            outputs = outputs * 0.5 + 0.5
+            outputs = outputs.clamp(min=0.0, max=1.0)
+            outputs = (outputs * 255.0).round()
+            outputs = outputs.numpy()
+            for output in outputs:
+                output = process_output(output)
+                save_path = input_paths.replace(args.data_dir, args.results_dir)
+                os.makedirs(os.path.dirname(save_path), exist_ok=True)
+                cv2.imwrite(save_path, output)
 
 
 if __name__ == '__main__':
@@ -56,5 +60,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     model = get_model(args.config, args.ckpt, args.encoder_ckpt)
-    infer_loader = MagpieDataset(args.data_dir, mode='test')
+    infer_dataset = MagpieDataset(args.data_dir, mode='test')
+    infer_loader = DataLoader(infer_dataset, batch_size=args.batch_size, num_workers=args.num_workers)
     inference(args, model, infer_loader, mode='test')
